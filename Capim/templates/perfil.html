@@ -1,0 +1,15 @@
+{% extends "layout.html" %}
+{% block title %}
+Perfil do usuário
+{% endblock %}
+{% block content %}
+<p> {{ user.username }} - Pedidos </p>
+
+<ul>
+    {% for order in user.orders %}
+        <li>Pedido #{{ order.id }} em {{ order.criacao }}</li>
+    {% endfor %}
+</ul>
+
+<a href="{{ url_for('logout')}}"> Sair </a>
+{% endblock %}

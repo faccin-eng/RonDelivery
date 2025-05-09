@@ -1,0 +1,29 @@
+{% extends "layout.html" %}
+{% block title %}
+Rondofood - Produtos
+{% endblock %}
+{% block content %}
+<h2>{{ empresa.username }} - Cardápio</h2>
+
+
+
+<ul>
+    {% for produto  in produtos %}
+    <li>
+    <img src="{{ url_for('static', filename='fotos_app/' ~ (produto.imagem or 'default.jng')) }}" alt="{{ produto.name }}" width="100">
+    <strong>{{ produto.name }}</strong> – R$ {{ "%.2f"|format(produto.price) }}
+    </li>
+    {% endfor %}
+</ul>
+{% if form %}
+<h3> Adicionar novo produto</h3>
+<form method="POST" enctype="multipart/form-data">
+    {{form.csrf_token}}
+    {{form.nome.label}} {{form.nome() }} <br>
+    {{form.descricao.label}} {{form.descricao() }} <br>
+    {{ form.preco.label }} {{ form.preco() }}<br>
+    {{ form.imagem.label }} {{ form.imagem() }}<br>
+    {{ form.botao_confirmacao }}
+</form>
+{% endif %}
+{% endblock %}
