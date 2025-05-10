@@ -1,4 +1,4 @@
-{% extends "layout.html" %}
+{% extends "e_layout.html" %}
 {% block title %}
 Rondofood - Produtos
 {% endblock %}
@@ -7,6 +7,19 @@ Rondofood - Produtos
 
 
 
+
+{% if form %}
+<h3> Adicionar novo produto</h3>
+<form method="POST" enctype="multipart/form-data">
+    {{form.csrf_token}}
+    {{form.nome.label}} {{form.nome() }} <br>
+    {{form.descricao.label}} {{form.descricao() }} <br>
+    {{ form.preco.label }} {{ form.preco() }}<br>
+    {{ form.imagem.label }} {{ form.imagem() }}<br>
+    {{ form.botao_confirmacao }}
+</form>
+{% endif %}
+
 <ul>
     {% for produto  in produtos %}
     <li>
@@ -14,5 +27,6 @@ Rondofood - Produtos
     <strong>{{ produto.name }}</strong> – R$ {{ "%.2f"|format(produto.price) }}
     </li>
     {% endfor %}
+</ul>
 
 {% endblock %}

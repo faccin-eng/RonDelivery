@@ -1,7 +1,13 @@
-{% extends "layout.html" %}
+{% extends "others_lay.html" %}
 {% block title %}
-Capim Limão - Culinária Saudável
+RonDelivery - Inicio
 {% endblock %}
 {% block content %}
-<p> Seja bem vindo ao nosso cardápio digital</p>
+<h2> Usuário </h2>
+<a href="{{ url_for('login')}}"> Entrar </a>
+<a href="{{ url_for('cadastro')}}"> Cadastro </a>
+
+<h2> Empresa </h2>
+<a href="{{ url_for('login')}}"> Entrar </a>
+<a href="{{ url_for('cadastro')}}"> Cadastro </a>
 {% endblock %}

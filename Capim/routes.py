@@ -1,6 +1,6 @@
 from flask import render_template, url_for, redirect, session, abort
 from Capim import app, database, bcrypt
-from Capim.models import Usuario, Empresa
+from Capim.models import Usuario, Empresa, Product
 from flask_login import login_required, login_user, logout_user, current_user
 from Capim.forms import FormLogin, FormCadastro, FormLogin_Emp, FormCadastro_Emp, FormProduto
 
@@ -41,6 +41,12 @@ def cadastro():
 def perfil():
     return render_template("perfil.html", user=current_user) # current_user já disponível no template, posso remover?
 
+@app.route("/produtos/<int:id_empresa>", methods=["GET", "POST"])
+def produtos(id_empresa):
+    emp = Empresa.query.get_or_404(id_empresa)
+    return render_template("produtos.html", empresa=emp, produtos=emp.produtos)
+
+
 # --------------------
 # Empresa
 # --------------------
@@ -73,8 +79,8 @@ def login_empresa():
     return render_template("e_login.html", form=form)
 
 
-@app.route("/produtos/<int:id_empresa>", methods=["GET", "POST"])
-def produtos(id_empresa):
+@app.route("/add_produtos/<int:id_empresa>", methods=["GET", "POST"])
+def add_produtos(id_empresa):
     emp = Empresa.query.get_or_404(id_empresa)
     form = FormProduto()
     
@@ -88,12 +94,37 @@ def produtos(id_empresa):
         )
         database.session.add(novo)
         database.session.commit()
-        return redirect(url_for("produtos", id_empresa=emp.id))
+        return redirect(url_for("add_produtos", id_empresa=emp.id))
 
     return render_template(
-        "produtos.html", empresa=emp, produtos=emp.produtos, form=form if session.get("empresa_id") == emp.id else None)
+        "e_produtos.html", empresa=emp, produtos=emp.produtos, form=form if session.get("empresa_id") == emp.id else None)
 
+@app.route("/e_perfil/<int:id_empresa>")
+@login_required
+def e_perfil():
+    return render_template("e_perfil.html")
 
+@app.context_processor
+def inject_empresa():
+    empresa_id = session.get("empresa_id")
+    empresa = Empresa.query.get(empresa_id) if empresa_id else None
+    return {"empresa_logada": empresa}
+
+@app.route("/logout")
+@login_required
+def logout():
+    logout_user() #ele já sabe que precisa deslogar o current user
+    return render_template("logout.html")
+
+@app.route("/empresa/logout")
+def logout_empresa():
+    session.pop("empresa_id", None)
+    return redirect(url_for("homepage"))
+
+# --------------------
+# Não definidas
+# --------------------
+                           
 @app.route("/pesquisa")
 def pesquisa():
     return render_template("pesquisa.html")
@@ -106,14 +137,3 @@ def carrinho():
 @app.route("/sobre")
 def sobre():
     return render_template("sobre.html")
-
-@app.route("/logout")
-@login_required
-def logout():
-    logout_user() #ele já sabe que precisa deslogar o current user
-    return render_template("logout.html")
-
-@app.route("/empresa/logout")
-def logout_empresa():
-    session.pop("empresa_id", None)
-    return redirect(url_for("homepage"))

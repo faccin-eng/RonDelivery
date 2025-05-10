@@ -7,14 +7,7 @@
     </head>
 
     <body>
-        <div class="navbar">
-            <a href="{{ url_for('carrinho') }}" class="navbar-item">🛒 Carrinho</a>
-            <a href="{{ url_for('perfil') }}" class="navbar-item">Perfil</a>
-            <a href="{{ url_for('sobre') }}" class="navbar-item">Sobre Nós</a>
-            <a href="{{ url_for('logout') }}" class="navbar-item">Sair</a>
-        </div>
-
-        <div class="body-content">
+            <div class="body-content">
             {% block content %}
             {% endblock %}
             <hr/>

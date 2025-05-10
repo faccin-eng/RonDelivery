@@ -1,9 +1,5 @@
-.message {
-    font-weight: 600;
-    color: blue;
-}
 .navbar {
-    background-color: rgb(164, 112, 207);
+    background-color: rgba(203, 115, 82, 1);
     font-size: 1em;
     font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
     color: white;
@@ -27,6 +23,28 @@
 
 .body-content {
     padding: 5px;
-    font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color: rgba(116, 177, 124, 0.692);
+    font-family: 'Merriweather', Georgia, serif; /* mais calor humano e seriedade */
+    font-size: 1.2rem; /* maior legibilidade sem exagero */
+    background-color: rgba(0, 102, 51, 1); /* verde bandeira */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    color: rgba(248, 240, 222, 1); /* tom creme claro para contraste confortável */
+}
+
+
+html, body{
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+.main-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center; /* vertical */
+    align-items: center;     /* horizontal */
+    min-height: 100vh;
 }

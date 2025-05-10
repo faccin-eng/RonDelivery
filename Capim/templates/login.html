@@ -1,12 +1,10 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RondoFood - Login</title>
-</head>
-<body>
-    <h1> Faça seu login</h1>
+
+{% extends "others_lay.html" %}
+{% block title %}
+ RondoFood - Login
+{% endblock %}
+{% block content %}  
+    <h2> Faça seu login</h2>
 
 <form method="POST">
      {{ form.csrf_token }}
@@ -20,5 +18,5 @@
 
 
 </form>
-</body>
-</html>
+{% endblock %}
+
