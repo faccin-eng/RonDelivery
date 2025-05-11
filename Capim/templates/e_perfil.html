@@ -1,13 +1,15 @@
 {% extends "e_layout.html" %}
 {% block title %}
-Perfil da Empresa
+{{ empresa_logada.username }} - Perfil
 {% endblock %}
 {% block content %}
-<h2> {{ empresa.username }} - Ordens </h2>
+<h2>  Ordens </h2>
   <p>Olá, {{ empresa_logada.username }}</p>
 <ul>
-    {% for order in user.orders %}
+    {% for order in orders %}
         <li>Pedido #{{ order.id }} em {{ order.criacao }}</li>
+    {% else %}
+        <li> Nenhum pedido encontrado.</li>
     {% endfor %}
 </ul>
 

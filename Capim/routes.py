@@ -1,12 +1,30 @@
 from flask import render_template, url_for, redirect, session, abort
+from functools import wraps
 from Capim import app, database, bcrypt
-from Capim.models import Usuario, Empresa, Product
+from Capim.models import Usuario, Empresa, Product, Order
 from flask_login import login_required, login_user, logout_user, current_user
 from Capim.forms import FormLogin, FormCadastro, FormLogin_Emp, FormCadastro_Emp, FormProduto
 
 @app.route("/")
 def homepage():
     return render_template("homepage.html")
+
+#Utilitarias
+
+def empresa_login_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if not session.get("empresa_id"):
+            return redirect(url_for("login_empresa"))
+        return f(*args, **kwargs)
+    return decorated_function
+
+@app.context_processor
+def inject_empresa():
+    empresa_id = session.get("empresa_id")
+    empresa = Empresa.query.get(empresa_id) if empresa_id else None
+    return {"empresa_logada": empresa}
+
 
 # --------------------
 # Cliente (Usuario)
@@ -71,15 +89,17 @@ def cadastro_empresa():
 @app.route("/empresa/login", methods=["GET", "POST"])
 def login_empresa():
     form = FormLogin_Emp()
+
     if form.validate_on_submit():
         emp = Empresa.query.filter_by(email=form.email.data).first()
-        if emp  and bcrypt.check_password_hash(emp.senha, form.senha.data):
+        if emp and bcrypt.check_password_hash(emp.senha, form.senha.data):
             session["empresa_id"] = emp.id
-            return redirect(url_for("produtos", id_empresa=emp.id))
+            return redirect(url_for("e_perfil", id_empresa=emp.id))
     return render_template("e_login.html", form=form)
 
 
 @app.route("/add_produtos/<int:id_empresa>", methods=["GET", "POST"])
+@empresa_login_required
 def add_produtos(id_empresa):
     emp = Empresa.query.get_or_404(id_empresa)
     form = FormProduto()
@@ -100,15 +120,17 @@ def add_produtos(id_empresa):
         "e_produtos.html", empresa=emp, produtos=emp.produtos, form=form if session.get("empresa_id") == emp.id else None)
 
 @app.route("/e_perfil/<int:id_empresa>")
-@login_required
-def e_perfil():
-    return render_template("e_perfil.html")
+@empresa_login_required
+def e_perfil(id_empresa):
+    emp = Empresa.query.get_or_404(id_empresa)
 
-@app.context_processor
-def inject_empresa():
-    empresa_id = session.get("empresa_id")
-    empresa = Empresa.query.get(empresa_id) if empresa_id else None
-    return {"empresa_logada": empresa}
+    # Só permite se a empresa logada for a dona do perfil
+    if session.get("empresa_id") != emp.id:
+        abort(403)
+
+    ordens = Order.query.filter_by(empresa_id=emp.id).all()
+
+    return render_template("e_perfil.html", empresa_logada=emp, ordens=ordens)
 
 @app.route("/logout")
 @login_required
@@ -137,3 +159,5 @@ def carrinho():
 @app.route("/sobre")
 def sobre():
     return render_template("sobre.html")
+
+

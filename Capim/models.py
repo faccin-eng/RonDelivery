@@ -6,7 +6,7 @@ class Usuario(database.Model, UserMixin):
     id = database.Column(database.Integer, primary_key=True)
     username = database.Column(database.String, nullable=False)
     email = database.Column(database.String, nullable=False, unique=True)
-    senha = database.Column(database.String, nullable=False)
+    senha = database.Column(database.LargeBinary(60), nullable=False)
 
     orders = database.relationship("Order", backref="usuario", lazy=True)
 
@@ -14,7 +14,7 @@ class Empresa(database.Model):
     id = database.Column(database.Integer, primary_key=True)
     username = database.Column(database.String, nullable=False, unique=True)
     email = database.Column(database.String, nullable=False, unique=True)
-    senha = database.Column(database.String, nullable=False)
+    senha = database.Column(database.LargeBinary(60), nullable=False)
 
     produtos = database.relationship("Product", backref="empresa", lazy=True)
 
@@ -28,6 +28,7 @@ class Product(database.Model):
 
 class Order(database.Model):
     id = database.Column(database.Integer, primary_key=True)
+    empresa_id = database.Column(database.Integer, database.ForeignKey('empresa.id'))
     usuario_id = database.Column(database.Integer, database.ForeignKey("usuario.id"), nullable=False)
     criacao = database.Column(database.DateTime, nullable=False, default=datetime.utcnow)
 
