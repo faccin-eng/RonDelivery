@@ -7,19 +7,29 @@
     </head>
 
     <body>
+        <nav>
+    {% if current_user.is_authenticated %}
         <div class="navbar">
+            <a href="{{ url_for('inicio') }}">Inicio</a>
             <a href="{{ url_for('carrinho') }}" class="navbar-item">🛒 Carrinho</a>
             <a href="{{ url_for('perfil') }}" class="navbar-item">Perfil</a>
             <a href="{{ url_for('sobre') }}" class="navbar-item">Sobre Nós</a>
             <a href="{{ url_for('logout') }}" class="navbar-item">Sair</a>
         </div>
-
+    {% else %}
+            <div class="navbar">
+            <a href="{{ url_for('inicio') }}">Inicio</a>
+            <a href="{{ url_for('sobre') }}" class="navbar-item">Sobre Nós</a>
+            <a href="{{ url_for('login') }}" class="navbar-item">Entrar</a>
+        </div>
+            {% endif %}
+</nav>
         <div class="body-content">
             {% block content %}
             {% endblock %}
-            <hr/>
+            
             <footer>
-                <p>&copy; Faccin Engenharia e Tecnologia 2025</p>
+                <p>&copy; Faccin Engenharia e Tecnologia 2025.</p>
             </footer>
         </div>
     </body>

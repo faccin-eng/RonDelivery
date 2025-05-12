@@ -1,12 +1,20 @@
 from flask import render_template, url_for, redirect, session, abort
+from flask_login import login_required, login_user, logout_user, current_user
+from werkzeug.utils import secure_filename
+import os
 from functools import wraps
 from Capim import app, database, bcrypt
 from Capim.models import Usuario, Empresa, Product, Order
-from flask_login import login_required, login_user, logout_user, current_user
 from Capim.forms import FormLogin, FormCadastro, FormLogin_Emp, FormCadastro_Emp, FormProduto
 
 @app.route("/")
 def homepage():
+    if current_user.is_authenticated:
+        return redirect(url_for("perfil", usuario=current_user))
+    elif "empresa_id" in session:
+        emp = Empresa.query.get(session["empresa_id"])
+        if emp:
+            return redirect(url_for("e_perfil", id_empresa=emp.id))
     return render_template("homepage.html")
 
 #Utilitarias
@@ -83,7 +91,7 @@ def cadastro_empresa():
         database.session.commit()
 
         session["empresa_id"] = emp.id
-        return redirect(url_for("produtos", id_empresa=emp.id))
+        return redirect(url_for("e_perfil", id_empresa=emp.id))
     return render_template("e_cadastro.html", form=form)
 
 @app.route("/empresa/login", methods=["GET", "POST"])
@@ -105,11 +113,15 @@ def add_produtos(id_empresa):
     form = FormProduto()
     
     if session.get("empresa_id") == emp.id and form.validate_on_submit():
+        imagem = form.imagem.data
+        filename = secure_filename(imagem.filename)
+        imagem.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+
         novo = Product(
             name=form.nome.data,
-            description = form.descricao.data,
+            descricao = form.descricao.data,
             price=form.preco.data,
-            imagem=form.imagem.data,  # adapte conforme upload
+            imagem=filename,  # somente nome ou caminho
             empresa_id=emp.id
         )
         database.session.add(novo)
@@ -144,9 +156,13 @@ def logout_empresa():
     return redirect(url_for("homepage"))
 
 # --------------------
-# Não definidas
+# Não funcionais
 # --------------------
                            
+@app.route("/inicio")
+def inicio():
+    return render_template("inicio.html")
+
 @app.route("/pesquisa")
 def pesquisa():
     return render_template("pesquisa.html")

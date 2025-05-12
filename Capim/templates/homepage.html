@@ -3,6 +3,8 @@
 RonDelivery - Inicio
 {% endblock %}
 {% block content %}
+
+
 <h2> Usuário </h2>
 <a href="{{ url_for('login')}}"> Entrar </a>
 <a href="{{ url_for('cadastro')}}"> Cadastro </a>
@@ -10,4 +12,8 @@ RonDelivery - Inicio
 <h2> Empresa </h2>
 <a href="{{ url_for('login_empresa')}}"> Entrar </a>
 <a href="{{ url_for('cadastro_empresa')}}"> Cadastro </a>
+
+    <img src="{{ url_for('static', filename='fotos_app/' ~ ('ronico.png')) }}" alt="logo RonDelivery" width="700">
+
+<a href="{{ url_for('inicio')}}"> Entrar como Visitante </a>
 {% endblock %}

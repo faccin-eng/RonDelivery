@@ -3,7 +3,7 @@
 Rondofood - Produtos
 {% endblock %}
 {% block content %}
-<h2>{{ empresa_logada.username }} - Cardápio</h2>
+<h2>{{ empresa_logada.username }} - Produtos </h2>
 
 
 
@@ -23,10 +23,13 @@ Rondofood - Produtos
 <ul>
     {% for produto  in produtos %}
     <li>
-    <img src="{{ url_for('static', filename='fotos_app/' ~ (produto.imagem or 'default.jng')) }}" alt="{{ produto.name }}" width="100">
+    <img src="{{ url_for('static', filename='fotos_prod/{}'. format(produto.imagem))}}" width="200" alt="{{ produto.name }}">
     <strong>{{ produto.name }}</strong> – R$ {{ "%.2f"|format(produto.price) }}
     </li>
     {% endfor %}
 </ul>
 
 {% endblock %}
+
+
+<!-- adicionar opção para editar itens -->

@@ -11,6 +11,7 @@ Rondofood - Produtos
     {% for produto  in produtos %}
     <li>
     <img src="{{ url_for('static', filename='fotos_app/' ~ (produto.imagem or 'default.jng')) }}" alt="{{ produto.name }}" width="100">
+    
     <strong>{{ produto.name }}</strong> – R$ {{ "%.2f"|format(produto.price) }}
     </li>
     {% endfor %}
