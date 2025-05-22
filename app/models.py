@@ -1,4 +1,4 @@
-from Capim import database, login_manager
+from app import database, login_manager
 from datetime import datetime
 from flask_login import UserMixin
 
@@ -41,6 +41,18 @@ class Carrinho(database.Model):
     quantidade = database.Column(database.Integer, nullable=False)
 
     produto = database.relationship("Product", backref="carrinhos")
+
+class Endereco(database.Model):
+    id = database.Column(database.Integer, primary_key=True)
+    usuario_id = database.Column(database.Integer, database.ForeignKey("usuario.id"), nullable=False)
+    tipo_end = database.Column(database.String(20), nullable=False)
+    endereco = database.Column(database.String(120), nullable=False)
+    numero = database.Column(database.Integer, nullable=False)
+    bairro = database.Column(database.String(50), nullable=False)
+    complemento = database.Column(database.String(120))
+
+    usuario = database.relationship("Usuario", backref="enderecos")
+
 
 @login_manager.user_loader
 def load_usuario(id_usuario):

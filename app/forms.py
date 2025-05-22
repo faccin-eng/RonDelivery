@@ -1,7 +1,7 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField, DecimalField, FileField
+from wtforms import StringField, PasswordField, SelectField, IntegerField, SubmitField, DecimalField, FileField
 from wtforms.validators import DataRequired, Email, EqualTo, Length, ValidationError
-from Capim.models import Usuario, Empresa, Product
+from app.models import Usuario, Empresa, Product
 
 class FormLogin_Emp(FlaskForm):
     email = StringField("Email", validators=[DataRequired(), Email()])
@@ -44,3 +44,14 @@ class FormCadastro(FlaskForm):
         usuario= Usuario.query.filter_by(email=email.data).first()
         if usuario:
             return ValidationError("Email já cadastrado")
+
+class Endereco(FlaskForm):
+    tipo_end = SelectField(
+        "Tipo de Endereço",
+        choices=[("principal", "Principal"), ("trabalho", "Trabalho"), ("outro", "Outro")])
+    endereco = StringField("Logradouro", validators=[DataRequired()])
+    numero = IntegerField("Número", validators=[DataRequired()])
+    bairro = StringField("Bairro", validators=[DataRequired()])
+    complemento = StringField("Complemento (opcional)")
+    submit = SubmitField("Salvar Endereço")
+

@@ -1,0 +1,30 @@
+{% extends "layout.html" %}
+{% block title %}
+Edereços 
+{% endblock %}
+{% block content %}
+<h2>{{ user.username }} Endereços</h2>
+
+<form method="POST">
+    {{ form.hidden_tag() }}
+    {{ form.tipo_end.label }} {{ form.tipo_end() }} <br>
+    {{ form.endereco_pri.label }} {{ form.endereco_pri() }} <br>
+    {{ form.numero.label }} {{ form.numero() }} <br>
+    {{ form.bairro.label }} {{ form.bairro() }} <br>
+    {{ form.complemento.label }} {{ form.complemento() }} <br>
+    {{ form.submit() }}
+</form>
+
+<hr>
+
+<h3>Endereços cadastrados:</h3>
+<ul>
+    {% for end in enderecos %}
+        <li>{{ end.tipo_end }} - {{ end.endereco_pri }}, {{ end.numero }} - {{ end.bairro }} {{ end.complemento }}</li>
+    {% else %}
+        <li>Nenhum endereço cadastrado</li>
+    {% endfor %}
+</ul>
+
+<a href="{{ url_for('perfil')}}"> Voltar </a>
+{% endblock %}
