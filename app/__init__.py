@@ -12,11 +12,7 @@ def create_app():
     database.init_app(app)
     bcrypt.init_app(app)
     login_manager.init_app(app)
-    # migrate(app, database) 
-
-    # database = SQLAlchemy(app)
-    # bcrypt = Bcrypt(app)
-    # login_manager = LoginManager(app)
+    migrate.init_app(app, database) 
 
     from app.routes.usuario import usuario_bp
     from app.routes.empresa import empresa_bp

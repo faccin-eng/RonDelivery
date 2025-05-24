@@ -1,4 +1,4 @@
-{% extends "layout.html" %}
+{% extends "usuario/layout.html" %}
 {% block title %}
 Perfil do usuário
 {% endblock %}
@@ -11,5 +11,6 @@ Perfil do usuário
     {% endfor %}
 </ul>
 
-<a href="{{ url_for('logout')}}"> Sair </a>
+<a href="{{ url_for('usuario.gerenciar_enderecos')}}"> Gerenciar Endereços </a>
+<a href="{{ url_for('usuario.logout')}}"> Sair </a>
 {% endblock %}

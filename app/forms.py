@@ -45,10 +45,12 @@ class FormCadastro(FlaskForm):
         if usuario:
             return ValidationError("Email já cadastrado")
 
-class Endereco(FlaskForm):
+class EnderecoForm(FlaskForm):
     tipo_end = SelectField(
         "Tipo de Endereço",
-        choices=[("principal", "Principal"), ("trabalho", "Trabalho"), ("outro", "Outro")])
+        choices=[("principal", "Principal"),
+                 ("trabalho", "Trabalho"),
+                 ("outro", "Outro")])
     endereco = StringField("Logradouro", validators=[DataRequired()])
     numero = IntegerField("Número", validators=[DataRequired()])
     bairro = StringField("Bairro", validators=[DataRequired()])

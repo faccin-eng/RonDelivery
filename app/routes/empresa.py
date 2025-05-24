@@ -26,8 +26,8 @@ def cadastro_empresa():
         database.session.commit()
 
         session["empresa_id"] = emp.id
-        return redirect(url_for("e_perfil", id_empresa=emp.id))
-    return render_template("e_cadastro.html", form=form)
+        return redirect(url_for("empresa.e_perfil", id_empresa=emp.id))
+    return render_template("empresa/e_cadastro.html", form=form)
 
 @empresa_bp.route("/empresa/login", methods=["GET", "POST"])
 def login_empresa():
@@ -37,8 +37,8 @@ def login_empresa():
         emp = Empresa.query.filter_by(email=form.email.data).first()
         if emp and bcrypt.check_password_hash(emp.senha, form.senha.data):
             session["empresa_id"] = emp.id
-            return redirect(url_for("e_perfil", id_empresa=emp.id))
-    return render_template("e_login.html", form=form)
+            return redirect(url_for("empresa.e_perfil", id_empresa=emp.id))
+    return render_template("empresa/e_login.html", form=form)
 
 
 @empresa_bp.route("/add_produtos/<int:id_empresa>", methods=["GET", "POST"])
@@ -61,10 +61,10 @@ def add_produtos(id_empresa):
         )
         database.session.add(novo)
         database.session.commit()
-        return redirect(url_for("add_produtos", id_empresa=emp.id))
+        return redirect(url_for("empresa.add_produtos", id_empresa=emp.id))
 
     return render_template(
-        "e_produtos.html", empresa=emp, produtos=emp.produtos, form=form if session.get("empresa_id") == emp.id else None)
+        "empresa/e_produtos.html", empresa=emp, produtos=emp.produtos, form=form if session.get("empresa_id") == emp.id else None)
 
 @empresa_bp.route("/e_perfil/<int:id_empresa>")
 @empresa_login_required
@@ -77,16 +77,10 @@ def e_perfil(id_empresa):
 
     ordens = Order.query.filter_by(empresa_id=emp.id).all()
 
-    return render_template("e_perfil.html", empresa_logada=emp, ordens=ordens)
-
-@empresa_bp.route("/logout")
-@login_required
-def logout():
-    logout_user() #ele já sabe que precisa deslogar o current user
-    return render_template("logout.html")
+    return render_template("empresa/e_perfil.html", empresa_logada=emp, ordens=ordens)
 
 @empresa_bp.route("/empresa/logout")
 def logout_empresa():
     session.pop("empresa_id", None)
-    return redirect(url_for("homepage"))
+    return redirect(url_for("geral.homepage"))
 

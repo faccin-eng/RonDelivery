@@ -10,17 +10,17 @@
         <nav>
     {% if current_user.is_authenticated %}
         <div class="navbar">
-            <a href="{{ url_for('inicio') }}">Inicio</a>
-            <a href="{{ url_for('carrinho') }}" class="navbar-item">🛒 Carrinho</a>
-            <a href="{{ url_for('perfil') }}" class="navbar-item">Pedidos</a>
-            <a href="{{ url_for('sobre') }}" class="navbar-item">Sobre Nós</a>
-            <a href="{{ url_for('logout') }}" class="navbar-item">Sair</a>
+            <a href="{{ url_for('usuario.inicio') }}">Inicio</a>
+            <a href="{{ url_for('usuario.carrinho') }}" class="navbar-item">🛒 Carrinho</a>
+            <a href="{{ url_for('usuario.perfil') }}" class="navbar-item">Pedidos</a>
+            <!-- <a href="{{ url_for('geral.sobre') }}" class="navbar-item">Sobre Nós</a> -->
+            <a href="{{ url_for('usuario.logout') }}" class="navbar-item">Sair</a>
         </div>
     {% else %}
             <div class="navbar">
-            <a href="{{ url_for('inicio') }}">Inicio</a>
-            <a href="{{ url_for('sobre') }}" class="navbar-item">Sobre Nós</a>
-            <a href="{{ url_for('login') }}" class="navbar-item">Entrar</a>
+            <a href="{{ url_for('geral.homepage') }}">Home</a>
+            <a href="{{ url_for('geral.sobre') }}" class="navbar-item">Sobre Nós</a>
+            <!-- <a href="{{ url_for('usuario.login') }}" class="navbar-item">Entrar</a> -->
         </div>
             {% endif %}
 </nav>

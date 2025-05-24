@@ -5,6 +5,6 @@ def empresa_login_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
         if not session.get("empresa_id"):
-            return redirect(url_for("login_empresa"))
+            return redirect(url_for("empresa.login_empresa"))
         return f(*args, **kwargs)
     return decorated_function

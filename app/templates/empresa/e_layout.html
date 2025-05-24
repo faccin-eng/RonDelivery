@@ -8,10 +8,10 @@
 
     <body>
         <div class="navbar">
-            <a href="{{ url_for('e_perfil', id_empresa=empresa_logada.id) }}" class="navbar-item">Perfil da Empresa</a>
-            <a href="{{ url_for('add_produtos', id_empresa=empresa_logada.id) }}" class="navbar-item">Cardápio</a>
-            <a href="{{ url_for('sobre') }}" class="navbar-item">Sobre Nós</a>
-            <a href="{{ url_for('logout_empresa') }}" class="navbar-item">Sair</a>
+            <a href="{{ url_for('empresa.e_perfil', id_empresa=empresa_logada.id) }}" class="navbar-item">Perfil da Empresa</a>
+            <a href="{{ url_for('empresa.add_produtos', id_empresa=empresa_logada.id) }}" class="navbar-item">Cardápio</a>
+            <!-- <a href="{{ url_for('geral.sobre') }}" class="navbar-item">Sobre Nós</a> -->
+            <a href="{{ url_for('empresa.logout_empresa') }}" class="navbar-item">Sair</a>
         </div>
 
         <div class="body-content">

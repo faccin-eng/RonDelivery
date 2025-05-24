@@ -1,4 +1,4 @@
-{% extends "e_layout.html" %}
+{% extends "empresa/e_layout.html" %}
 {% block title %}
 {{ empresa_logada.username }} - Perfil
 {% endblock %}
@@ -13,5 +13,5 @@
     {% endfor %}
 </ul>
 
-<a href="{{ url_for('logout_empresa')}}"> Sair </a>
+<a href="{{ url_for('empresa.logout_empresa')}}"> Sair </a>
 {% endblock %}
