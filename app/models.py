@@ -7,6 +7,7 @@ class Usuario(database.Model, UserMixin):
     username = database.Column(database.String, nullable=False)
     email = database.Column(database.String, nullable=False, unique=True)
     senha = database.Column(database.LargeBinary(60), nullable=False)
+    criacao = database.Column(database.DateTime, nullable=False, default=datetime.utcnow)
 
     orders = database.relationship("Order", backref="usuario", lazy=True)
 
@@ -15,6 +16,7 @@ class Empresa(database.Model):
     username = database.Column(database.String, nullable=False, unique=True)
     email = database.Column(database.String, nullable=False, unique=True)
     senha = database.Column(database.LargeBinary(60), nullable=False)
+    criacao = database.Column(database.DateTime, nullable=False, default=datetime.utcnow)
 
     produtos = database.relationship("Product", backref="empresa", lazy=True)
 
@@ -25,6 +27,7 @@ class Product(database.Model):
     imagem = database.Column(database.String(255), default="default.png")
     price = database.Column(database.Float)
     empresa_id = database.Column(database.Integer, database.ForeignKey("empresa.id"), nullable=False)
+    criacao = database.Column(database.DateTime, nullable=False, default=datetime.utcnow)
 
 class Order(database.Model):
     id = database.Column(database.Integer, primary_key=True)
@@ -50,6 +53,7 @@ class Endereco(database.Model):
     numero = database.Column(database.Integer, nullable=False)
     bairro = database.Column(database.String(50), nullable=False)
     complemento = database.Column(database.String(120))
+    criacao = database.Column(database.DateTime, nullable=False, default=datetime.utcnow)
 
     usuario = database.relationship("Usuario", backref="enderecos")
 
