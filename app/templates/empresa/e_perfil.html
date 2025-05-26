@@ -5,6 +5,13 @@
 {% block content %}
 <h2>  Ordens </h2>
   <p>Olá, {{ empresa_logada.username }}</p>
+
+  <form action="{{ url_for('empresa.toggle_status', empresa_id=empresa.id)}}" method="post">
+    <button type="submit">
+        {{'Aberto' if empresa.aberto else 'Fechado'}}
+    </button>
+  </form>
+
 <ul>
     {% for order in orders %}
         <li>Pedido #{{ order.id }} em {{ order.criacao }}</li>

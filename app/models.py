@@ -1,61 +1,62 @@
-from app import database, login_manager
+from app import db, login_manager
 from datetime import datetime
 from flask_login import UserMixin
 
-class Usuario(database.Model, UserMixin):
-    id = database.Column(database.Integer, primary_key=True)
-    username = database.Column(database.String, nullable=False)
-    email = database.Column(database.String, nullable=False, unique=True)
-    senha = database.Column(database.LargeBinary(60), nullable=False)
-    criacao = database.Column(database.DateTime, nullable=False, default=datetime.utcnow)
+class Usuario(db.Model, UserMixin):
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String, nullable=False)
+    email = db.Column(db.String, nullable=False, unique=True)
+    senha = db.Column(db.LargeBinary(60), nullable=False)
+    criacao = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
 
-    orders = database.relationship("Order", backref="usuario", lazy=True)
+    orders = db.relationship("Order", backref="usuario", lazy=True)
 
-class Empresa(database.Model):
-    id = database.Column(database.Integer, primary_key=True)
-    username = database.Column(database.String, nullable=False, unique=True)
-    email = database.Column(database.String, nullable=False, unique=True)
-    senha = database.Column(database.LargeBinary(60), nullable=False)
-    criacao = database.Column(database.DateTime, nullable=False, default=datetime.utcnow)
+class Empresa(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String, nullable=False, unique=True)
+    email = db.Column(db.String, nullable=False, unique=True)
+    senha = db.Column(db.LargeBinary(60), nullable=False)
+    criacao = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    aberto = db.Column(db.Boolean, default=False, nullable=False)
 
-    produtos = database.relationship("Product", backref="empresa", lazy=True)
+    produtos = db.relationship("Product", backref="empresa", lazy=True)
 
-class Product(database.Model):
-    id = database.Column(database.Integer, primary_key=True)
-    name = database.Column(database.String(120))
-    descricao = database.Column(database.Text)
-    imagem = database.Column(database.String(255), default="default.png")
-    price = database.Column(database.Float)
-    empresa_id = database.Column(database.Integer, database.ForeignKey("empresa.id"), nullable=False)
-    criacao = database.Column(database.DateTime, nullable=False, default=datetime.utcnow)
+class Product(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(120))
+    descricao = db.Column(db.Text)
+    imagem = db.Column(db.String(255), default="default.png")
+    price = db.Column(db.Float)
+    empresa_id = db.Column(db.Integer, db.ForeignKey("empresa.id"), nullable=False)
+    criacao = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
 
-class Order(database.Model):
-    id = database.Column(database.Integer, primary_key=True)
-    empresa_id = database.Column(database.Integer, database.ForeignKey('empresa.id'))
-    usuario_id = database.Column(database.Integer, database.ForeignKey("usuario.id"), nullable=False)
-    criacao = database.Column(database.DateTime, nullable=False, default=datetime.utcnow)
+class Order(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    empresa_id = db.Column(db.Integer, db.ForeignKey('empresa.id'))
+    usuario_id = db.Column(db.Integer, db.ForeignKey("usuario.id"), nullable=False)
+    criacao = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
 
-    itens = database.relationship("Carrinho", backref="order", lazy=True)
+    itens = db.relationship("Carrinho", backref="order", lazy=True)
 
-class Carrinho(database.Model):
-    id = database.Column(database.Integer, primary_key=True)
-    order_id = database.Column(database.Integer, database.ForeignKey("order.id"), nullable=False)
-    product_id = database.Column(database.Integer, database.ForeignKey("product.id"), nullable=False)
-    quantidade = database.Column(database.Integer, nullable=False)
+class Carrinho(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    order_id = db.Column(db.Integer, db.ForeignKey("order.id"), nullable=False)
+    product_id = db.Column(db.Integer, db.ForeignKey("product.id"), nullable=False)
+    quantidade = db.Column(db.Integer, nullable=False)
 
-    produto = database.relationship("Product", backref="carrinhos")
+    produto = db.relationship("Product", backref="carrinhos")
 
-class Endereco(database.Model):
-    id = database.Column(database.Integer, primary_key=True)
-    usuario_id = database.Column(database.Integer, database.ForeignKey("usuario.id"), nullable=False)
-    tipo_end = database.Column(database.String(20), nullable=False)
-    endereco = database.Column(database.String(120), nullable=False)
-    numero = database.Column(database.Integer, nullable=False)
-    bairro = database.Column(database.String(50), nullable=False)
-    complemento = database.Column(database.String(120))
-    criacao = database.Column(database.DateTime, nullable=False, default=datetime.utcnow)
+class Endereco(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    usuario_id = db.Column(db.Integer, db.ForeignKey("usuario.id"), nullable=False)
+    tipo_end = db.Column(db.String(20), nullable=False)
+    endereco = db.Column(db.String(120), nullable=False)
+    numero = db.Column(db.Integer, nullable=False)
+    bairro = db.Column(db.String(50), nullable=False)
+    complemento = db.Column(db.String(120))
+    criacao = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
 
-    usuario = database.relationship("Usuario", backref="enderecos")
+    usuario = db.relationship("Usuario", backref="enderecos")
 
 
 @login_manager.user_loader

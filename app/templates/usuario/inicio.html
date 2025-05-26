@@ -3,5 +3,13 @@
 RonDelivery - Inicio
 {% endblock %}
 {% block content %}
-<p> Aqui as empresas cadastradas aparecem com suas logos </p>
+<p> Empresas abertas </p>
+<div class="grid grid-cols-3 gap-4">
+    {% for empresa in empresas %}
+        <a href="{{url_for('usuario.produtos', id_empresa=empresa.id)}}"
+        class="block rounded -lg shdow p-4 text-center border">
+        {{empresa.username}}
+        </a>
+    {% endfor %}
+</div>
 {% endblock %}

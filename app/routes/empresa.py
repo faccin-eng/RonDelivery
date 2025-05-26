@@ -1,9 +1,9 @@
-from flask import Blueprint, render_template, redirect, url_for, session, abort
+from flask import Blueprint, render_template, redirect, url_for, session, abort, current_app, request
 from werkzeug.utils import secure_filename
 
 from app.forms import FormCadastro_Emp, FormLogin_Emp, FormProduto
 from app.models import Empresa, Product, Order
-from app.extensions import bcrypt, database
+from app.extensions import bcrypt, db
 from app.decorators import empresa_login_required
 from flask_login import login_required
 
@@ -22,8 +22,8 @@ def cadastro_empresa():
             senha=hashed,
             email=form.email.data
             )
-        database.session.add(emp)
-        database.session.commit()
+        db.session.add(emp)
+        db.session.commit()
 
         session["empresa_id"] = emp.id
         return redirect(url_for("empresa.e_perfil", id_empresa=emp.id))
@@ -50,7 +50,7 @@ def add_produtos(id_empresa):
     if session.get("empresa_id") == emp.id and form.validate_on_submit():
         imagem = form.imagem.data
         filename = secure_filename(imagem.filename)
-        imagem.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+        imagem.save(os.path.join(current_app.config['UPLOAD_FOLDER'], filename))
 
         novo = Product(
             name=form.nome.data,
@@ -59,8 +59,8 @@ def add_produtos(id_empresa):
             imagem=filename,  # somente nome ou caminho
             empresa_id=emp.id
         )
-        database.session.add(novo)
-        database.session.commit()
+        db.session.add(novo)
+        db.session.commit()
         return redirect(url_for("empresa.add_produtos", id_empresa=emp.id))
 
     return render_template(
@@ -69,18 +69,25 @@ def add_produtos(id_empresa):
 @empresa_bp.route("/e_perfil/<int:id_empresa>")
 @empresa_login_required
 def e_perfil(id_empresa):
-    emp = Empresa.query.get_or_404(id_empresa)
+    empresa = Empresa.query.get_or_404(id_empresa)
 
     # Só permite se a empresa logada for a dona do perfil
-    if session.get("empresa_id") != emp.id:
+    if session.get("empresa_id") != empresa.id:
         abort(403)
 
-    ordens = Order.query.filter_by(empresa_id=emp.id).all()
+    ordens = Order.query.filter_by(empresa_id=empresa.id).all()
 
-    return render_template("empresa/e_perfil.html", empresa_logada=emp, ordens=ordens)
+    return render_template("empresa/e_perfil.html", empresa=empresa, ordens=ordens)
 
 @empresa_bp.route("/empresa/logout")
 def logout_empresa():
     session.pop("empresa_id", None)
     return redirect(url_for("geral.homepage"))
 
+@empresa_bp.route('/toggle_status/<int:empresa_id>', methods=['POST'])
+@empresa_login_required
+def toggle_status(empresa_id):
+    empresa = Empresa.query.get_or_404(empresa_id)
+    empresa.aberto = not empresa.aberto
+    db.session.commit()
+    return redirect(request.referrer or url_for('empresa.e_perfil', empresa_id=empresa_id))

@@ -3,7 +3,7 @@ from flask_login import current_user, login_required, logout_user, login_user
 
 from app.forms import FormLogin, FormCadastro, EnderecoForm
 from app.models import Empresa, Usuario, Product, Endereco
-from app.extensions import bcrypt, database
+from app.extensions import bcrypt, db
 
 usuario_bp = Blueprint("usuario", __name__, url_prefix="/usuario")
 
@@ -24,10 +24,10 @@ def cadastro():
         senha = bcrypt.generate_password_hash(formcadastro.senha.data)
         usuario = Usuario(username=formcadastro.username.data, senha=senha, email=formcadastro.email.data)
 
-        database.session.add(usuario)
-        database.session.commit()
+        db.session.add(usuario)
+        db.session.commit()
         login_user(usuario, remember=True)
-        # database.session.refresh(usuario)
+        # db.session.refresh(usuario)
         return redirect(url_for("usuario.perfil", usuario=current_user))
     return render_template("usuario/cadastro.html", form=formcadastro)
 
@@ -49,11 +49,10 @@ def gerenciar_enderecos():
             bairro=form.bairro.data,
             complemento=form.complemento.data,
         )
-        database.session.add(novo_end)
-        database.session.commit()
+        db.session.add(novo_end)
+        db.session.commit()
         return redirect(url_for("usuario.gerenciar_enderecos"))
     enderecos = Endereco.query.filter_by(usuario_id=current_user.id).all()
-    # enderecos = current_user.enderecos 
     return render_template(
         "usuario/enderecos.html",
         form=form,
@@ -63,12 +62,14 @@ def gerenciar_enderecos():
 
 @usuario_bp.route("/produtos/<int:id_empresa>", methods=["GET", "POST"])
 def produtos(id_empresa):
-    emp = Empresa.query.get_or_404(id_empresa)
-    return render_template("usuario/produtos.html", empresa=emp, produtos=emp.produtos)
+    empresa = Empresa.query.get_or_404(id_empresa)
+    produtos = empresa.produtos
+    return render_template("usuario/produtos.html", empresa=empresa, produtos=empresa.produtos)
 
 @usuario_bp.route("/inicio")
 def inicio():
-    return render_template("usuario/inicio.html")
+    empresas = Empresa.query.filter_by(aberto=True).all()
+    return render_template("usuario/inicio.html", empresas=empresas)
 
 @usuario_bp.route("/carrinho") #, methods=['POST']
 @login_required

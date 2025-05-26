@@ -1,5 +1,5 @@
 from flask import Flask
-from .extensions import database, bcrypt, login_manager, migrate
+from .extensions import db, bcrypt, login_manager, migrate
 import os
 
 def create_app():
@@ -9,10 +9,10 @@ def create_app():
     app.config["SECRET_KEY"] = "bddfaa05e05bcd560b8f8a239352802b" #SECRET
     app.config['UPLOAD_FOLDER'] = os.path.join(os.path.dirname(__file__), 'static', 'fotos_prod')
 
-    database.init_app(app)
+    db.init_app(app)
     bcrypt.init_app(app)
     login_manager.init_app(app)
-    migrate.init_app(app, database) 
+    migrate.init_app(app, db) 
 
     from app.routes.usuario import usuario_bp
     from app.routes.empresa import empresa_bp
